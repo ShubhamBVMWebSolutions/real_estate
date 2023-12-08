@@ -70,30 +70,35 @@ class ProductController extends Controller
     public function property_gallery_update(Request $request, $id)
     {
         try {
-                $property_id = Crypt::decrypt($id)['id'];
+            $property_id = Crypt::decrypt($id)['id'];
 
-                if ($request->hasFile('images')) {
-                    foreach ($request->file('images') as $image) {
-                        $imageName = time() . '.'.rand(). '.' . $image->getClientOriginalExtension();
-                        $image->move(public_path('property_gallery/'), $imageName);
-                        try {
-                            PropertyGallery::create([
-                                'product_id' => $property_id,
-                                'image' =>'property_gallery/'. $imageName,
-                            ]);
-                        } catch (\Exception $e) {
-                            \Log::error('Error during database insertion: ' . $e->getMessage());
-                            
-                        }
+            if ($request->hasFile('images')) {
+                $categories = $request->input('categories');
+
+                foreach ($request->file('images') as $key => $image) {
+                    $imageName = time() . '.' . rand() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('property_gallery/'), $imageName);
+
+                    try {
+                        PropertyGallery::create([
+                            'product_id' => $property_id,
+                            'image' => 'property_gallery/' . $imageName,
+                            'image_category' => $categories[$key],
+                        ]);
+                    } catch (\Exception $e) {
+                        \Log::error('Error during database insertion: ' . $e->getMessage());
                     }
                 }
+            }
 
                 Alert::success('Gallery Updated', 'Your Property Gallery Is Being Updated Successfully');
+                return response()->json(['success' => true]);
                 return redirect()->back();
-            } catch (\Exception $e) {
-                \Log::error('General error: ' . $e->getMessage());
-            }   
-
+        } catch (\Exception $e) {
+            \Log::error('General error: ' . $e->getMessage());
+            return response()->json(['error' => 'Error during gallery update'], 500);
+            return redirect()->back();
+        }
     }
 
     public function delete_image(Request $request)

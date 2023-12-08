@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PropertyGallery extends Model
 {
     use HasFactory;
-    protected $fillable = ['product_id','image'];
+    protected $fillable = ['product_id','image','image_category'];
 
 }

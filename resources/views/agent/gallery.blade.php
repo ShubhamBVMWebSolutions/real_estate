@@ -38,6 +38,69 @@
         color: red;
     }
 
+    /* Style the modal */
+    .selected_image_modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .selected_image_modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        padding-bottom: 20px;
+    }
+
+    .selected_image_close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .selected_image_close:hover,
+    .selected_image_close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+    .modal .modal-image-container {
+      text-align: center;
+      margin-bottom: 20px;
+      display: inline-block;
+      width: 200px;
+      height: 150px;
+      margin-right: 20px;
+      vertical-align: top;
+      padding-bottom: 15px;
+    }
+
+    .modal .modal-image-container img {
+      max-width: 100%;
+      height: 100%;
+     object-fit: cover;
+    }
+
+    .modal .modal-image-container select {
+      margin-top: 10px;
+    }
+    select {
+        margin-top: 10px;
+        display: flex;
+    }
+
 </style>
 
 
@@ -68,7 +131,7 @@
                                 @csrf
                                 <label for="fileInput">
                                 <img src="{{asset('icons/upload.png')}}" alt="upload_image" style="max-width: 4%;">
-                                <input type="file" name="images[]"id="fileInput" style="display: none;"multiple>
+                                <input type="file" name="images[]"id="fileInput" style="display: none;"multiple onchange="openModal()">
                                     
                                 </label>
                             </form>
@@ -77,10 +140,8 @@
                             <div>
                               <div class="btn-group w-100 mb-2">
                                 <a class="btn btn-info active" href="javascript:void(0)" data-filter="all"> All items </a>
-                                <a class="btn btn-info" href="javascript:void(0)" data-filter="1"> Category 1 (WHITE) </a>
-                                <a class="btn btn-info" href="javascript:void(0)" data-filter="2"> Category 2 (BLACK) </a>
-                                <a class="btn btn-info" href="javascript:void(0)" data-filter="3"> Category 3 (COLORED) </a>
-                                <a class="btn btn-info" href="javascript:void(0)" data-filter="4"> Category 4 (COLORED, BLACK) </a>
+                                <a class="btn btn-info" href="javascript:void(0)" data-filter="Exterior">Exterior </a>
+                                <a class="btn btn-info" href="javascript:void(0)" data-filter="Interior">Interior </a>
                               </div>
                               <div class="mb-2">
                                 <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a>
@@ -97,70 +158,15 @@
                               </div>
                             </div>
                             <div>
-                              <div class="filter-container p-0 row">
+                              <div class="filter-container p-0 row" style="top: 22px;">
                                 @foreach($gallery as $image)
                                 <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample" style="width: 100%; margin: 0; padding: 0;" id="image_container">
-                                  <a href="#" onclick="openImageModal('{{asset($image->image)}}')" data-toggle="modal"  data-target="#imageModal" data-title="sample 1 - white">
-                                    <img src="{{asset($image->image)}}" class="img-fluid mb-2" alt="white sample"/ style=" width: 100%;height: 233px;object-fit: cover;">
+                                  <a href="#" onclick="openzoomImageModal('{{asset($image->image)}}')" data-toggle="modal"  data-target="#imageModal" data-title="{{$image->image_category}}">
+                                    <img src="{{asset($image->image)}}" class="img-fluid mb-2" alt="white sample" style=" width: 100%;height: 233px;object-fit: cover;">
                                   </a>
                                      <span class="delete-icon" onclick="deleteImage('{{ $image->id }}')"><i class='fas fa-trash' style='font-size:20px;color:red'></i></i></span>
                                 </div>
                                 @endforeach
-                                <!-- <div class="filtr-item col-sm-2" data-category="2, 4" data-sort="black sample">
-                                  <a href="https://via.placeholder.com/1200/000000.png?text=2" data-toggle="lightbox" data-title="sample 2 - black">
-                                    <img src="https://via.placeholder.com/300/000000?text=2" class="img-fluid mb-2" alt="black sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="3, 4" data-sort="red sample">
-                                  <a href="https://via.placeholder.com/1200/FF0000/FFFFFF.png?text=3" data-toggle="lightbox" data-title="sample 3 - red">
-                                    <img src="https://via.placeholder.com/300/FF0000/FFFFFF?text=3" class="img-fluid mb-2" alt="red sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="3, 4" data-sort="red sample">
-                                  <a href="https://via.placeholder.com/1200/FF0000/FFFFFF.png?text=4" data-toggle="lightbox" data-title="sample 4 - red">
-                                    <img src="https://via.placeholder.com/300/FF0000/FFFFFF?text=4" class="img-fluid mb-2" alt="red sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="2, 4" data-sort="black sample">
-                                  <a href="https://via.placeholder.com/1200/000000.png?text=5" data-toggle="lightbox" data-title="sample 5 - black">
-                                    <img src="https://via.placeholder.com/300/000000?text=5" class="img-fluid mb-2" alt="black sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
-                                  <a href="https://via.placeholder.com/1200/FFFFFF.png?text=6" data-toggle="lightbox" data-title="sample 6 - white">
-                                    <img src="https://via.placeholder.com/300/FFFFFF?text=6" class="img-fluid mb-2" alt="white sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
-                                  <a href="https://via.placeholder.com/1200/FFFFFF.png?text=7" data-toggle="lightbox" data-title="sample 7 - white">
-                                    <img src="https://via.placeholder.com/300/FFFFFF?text=7" class="img-fluid mb-2" alt="white sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="2, 4" data-sort="black sample">
-                                  <a href="https://via.placeholder.com/1200/000000.png?text=8" data-toggle="lightbox" data-title="sample 8 - black">
-                                    <img src="https://via.placeholder.com/300/000000?text=8" class="img-fluid mb-2" alt="black sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="3, 4" data-sort="red sample">
-                                  <a href="https://via.placeholder.com/1200/FF0000/FFFFFF.png?text=9" data-toggle="lightbox" data-title="sample 9 - red">
-                                    <img src="https://via.placeholder.com/300/FF0000/FFFFFF?text=9" class="img-fluid mb-2" alt="red sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
-                                  <a href="https://via.placeholder.com/1200/FFFFFF.png?text=10" data-toggle="lightbox" data-title="sample 10 - white">
-                                    <img src="https://via.placeholder.com/300/FFFFFF?text=10" class="img-fluid mb-2" alt="white sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="1" data-sort="white sample">
-                                  <a href="https://via.placeholder.com/1200/FFFFFF.png?text=11" data-toggle="lightbox" data-title="sample 11 - white">
-                                    <img src="https://via.placeholder.com/300/FFFFFF?text=11" class="img-fluid mb-2" alt="white sample"/>
-                                  </a>
-                                </div>
-                                <div class="filtr-item col-sm-2" data-category="2, 4" data-sort="black sample">
-                                  <a href="https://via.placeholder.com/1200/000000.png?text=12" data-toggle="lightbox" data-title="sample 12 - black">
-                                    <img src="https://via.placeholder.com/300/000000?text=12" class="img-fluid mb-2" alt="black sample"/>
-                                  </a>
-                                </div> -->
                               </div>
                             </div>
 
@@ -175,21 +181,30 @@
             <!-- End of Footer -->
         </div>
     </div>
+    <!-- Modal HTML structure -->
+    <div id="imageModal" class="modal">
+        <div class="selected_image_modal-content">
+            <span class="selected_image_close" onclick="closeModal()">&times;</span>
+            <div id="selectedImages" class="row" style="padding-bottom: 40px;"></div>
+            <button class="btn btn-primary" onclick="submitForm()">Submit</button>
+        </div>
+    </div>
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="zoomimageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="background: transparent; border: none;">
             <div class="modal-body" style="padding: 0;">
-                <img id="modalImage" src="" class="img-fluid" alt="Modal Image" style="max-width: 130vh;height: 100%;margin: 0 auto;display: block; width: 100%; object-fit: contain;">
+              <h1>Hello</h1>
+                <img id="modalzoomImage" src="" class="img-fluid" alt="Modal Image" style="max-width: 130vh;height: 100%;margin: 0 auto;display: block; width: 100%; object-fit: contain;">
             </div>
         </div>
     </div>
 </div>
-
     <!-- Bootstrap core JavaScript-->
     @include('agent.layouts.scripts')
 <!-- Page Script's -->
@@ -221,14 +236,17 @@
     });
   })
 
-  $('#fileInput').on('change', function () {
-        $('#uploadForm').submit();
-    });
+  // $('#fileInput').on('change', function () {
+  //       $('#uploadForm').submit();
+  //   });
 </script>
 <script>
-    function openImageModal(imageSrc) {
-        var modalImage = document.getElementById('modalImage');
-        modalImage.src = imageSrc;
+    function openzoomImageModal(imageSrc) {
+      alert('ok');
+        var modal = document.getElementById("zoomimageModal");
+        modal.style.display = "block";
+        var modalzoomImage = document.getElementById('modalzoomImage');
+        modalzoomImage.src = imageSrc;
     }
 
 
@@ -249,6 +267,97 @@
             }
         });
     }
+</script>
+
+<script>
+  
+  function openModal() {
+    var modal = document.getElementById("imageModal");
+    modal.style.display = "block";
+
+    var filesInput = document.getElementById("fileInput");
+    var selectedImagesContainer = document.getElementById("selectedImages");
+
+    selectedImagesContainer.innerHTML = "";
+
+    for (var i = 0; i < filesInput.files.length; i++) {
+        var imgContainer = document.createElement("div");
+        imgContainer.className = "modal-image-container";
+
+        var img = document.createElement("img");
+        img.src = URL.createObjectURL(filesInput.files[i]);
+        img.className = "modal-image"; 
+        imgContainer.appendChild(img);
+
+        var dropdown = createDropdown(i);
+        imgContainer.appendChild(dropdown);
+
+        selectedImagesContainer.appendChild(imgContainer);
+    }
+}
+
+function closeModal() {
+    var modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+}
+
+function createDropdown(index) {
+    var dropdown = document.createElement("select");
+    dropdown.name = "category["+ index +"]";
+
+    // Add dropdown options
+    var options = ["Exterior", "Interior"];
+    for (var i = 0; i < options.length; i++) {
+        var option = document.createElement("option");
+        option.text = options[i];
+        dropdown.add(option);
+    }
+    return dropdown;
+}
+
+function submitForm() {
+    var filesInput = document.getElementById("fileInput");
+    var selectedValues = [];
+     for (var i = 0; i < filesInput.files.length; i++) {
+        var dropdown = document.getElementsByName("category[" + i + "]")[0];
+        var selectedValue = dropdown.options[dropdown.selectedIndex].text;
+        selectedValues.push({ 
+          file: filesInput.files[i],
+          category: selectedValue
+        });
+    }
+    console.log(selectedValues);
+     var formData = new FormData();
+      for (var i = 0; i < selectedValues.length; i++) {
+        formData.append("images[]", selectedValues[i].file);
+        formData.append("categories["+ i +"]", selectedValues[i].category);
+    }
+
+    var formAction = document.getElementById("uploadForm").action;
+     fetch(formAction, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+       if (data.success) {
+            location.reload();
+        } else {
+            console.error('Error:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        // Close the modal
+        closeModal();
+    });
+}
+
 </script>
 
 <!-- Page Script's -->
