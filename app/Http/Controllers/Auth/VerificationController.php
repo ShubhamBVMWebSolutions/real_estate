@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+
 
 class VerificationController extends Controller
 {
@@ -16,7 +17,7 @@ class VerificationController extends Controller
     | This controller is responsible for handling email verification for any
     | user that recently registered with the application. Emails may also
     | be re-sent if the user didn't receive the original email message.
-    |
+    |------------------------------------------------------------------------
     */
 
     use VerifiesEmails;
@@ -38,5 +39,15 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
+    protected function create(array $data)
+    {
+        return $this->generateCustomToken($user);
+    }
+
+    protected function generateCustomToken($user)
+    {
+        return hash_hmac('sha256', Str::random(40), $user->getKey());
     }
 }
