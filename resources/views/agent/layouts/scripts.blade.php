@@ -44,9 +44,7 @@
 
              messages.forEach(function (message) {
                 var messageItem = $("<a>").addClass("dropdown-item d-flex align-items-center").attr("href", "#");
-
-                 var checkboxContainer = $("<div>").addClass("checkbox-container");
-                 
+                 var checkboxContainer = $("<div>").addClass("checkbox-container");                 
                  var checkboxElement = $("<input>").attr({
                         type: "checkbox",
                         name: "response",

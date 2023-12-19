@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\inquiry;
 use App\Models\Profile;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller
 {
@@ -77,7 +78,19 @@ class HomeController extends Controller
 
     public function agent()
     {
-        return view ('agent.index');
+        if (Auth::user() == null) {
+            Alert::error('Login Required', 'Please Login or Register First');
+            return redirect()->route('login');
+        }else{
+            if (Auth::user()->is_admin == 2) {
+                Alert::success("Login Successfull","Welcome To the Dashboard");
+                return view ('agent.index');
+               }else{
+                Alert::error('Un-Authenticated Access', "You Don't have required Previlages");
+                return redirect()->back();
+               }   
+
+           }
     }
 
     public function agent_profile()

@@ -8,6 +8,7 @@
 
     </head>
 <body class="antialiased">
+      @include('sweetalert::alert')
         <!-- Template Start's -->
        @include('front_page.navbar')
         <div class="untree_co_slider-wrap" data-aos="fade-up">

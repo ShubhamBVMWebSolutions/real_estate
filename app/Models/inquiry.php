@@ -12,7 +12,9 @@ class inquiry extends Model
 
     public function getMessagesByAgentId($agent_id)
     {
-        $messages = inquiry::where('agent_id','=',$agent_id)->get();
+        $messages = inquiry::where('agent_id','=',$agent_id)
+        ->where('product_id','=',null)
+        ->get();
         return $messages ;
     }
 }

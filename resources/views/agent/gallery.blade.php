@@ -125,12 +125,12 @@
                     <!-- Gallery -->
                     <div class="col-12">
                         <div class="card card-primary">
-                          <div class="card-header">
-                            <h4 class="card-title">{{$property->product_name}}</h4>
-                            <form action="{{route('property_gallery_update',Crypt::encrypt(['id'=>$property->id]))}}" method="POST" enctype="multipart/form-data" style="position: relative; left: 95%;" id="uploadForm">
+                          <div class="card-header d-flex justify-content-between">
+                            <h4 class="card-title mb-0" style="flex: 1;">{{$property->product_name}}</h4>
+                            <form action="{{route('property_gallery_update',Crypt::encrypt(['id'=>$property->id]))}}" method="POST" enctype="multipart/form-data" style="" id="uploadForm">
                                 @csrf
                                 <label for="fileInput">
-                                <img src="{{asset('icons/upload.png')}}" alt="upload_image" style="max-width: 4%;">
+                                <img src="{{asset('icons/upload.png')}}" alt="upload_image" style="width: 45px;height: 35px; object-fit: contain; cursor: pointer;">
                                 <input type="file" name="images[]"id="fileInput" style="display: none;"multiple onchange="openModal()">
                                     
                                 </label>
@@ -242,7 +242,6 @@
 </script>
 <script>
     function openzoomImageModal(imageSrc) {
-      alert('ok');
         var modal = document.getElementById("zoomimageModal");
         modal.style.display = "block";
         var modalzoomImage = document.getElementById('modalzoomImage');
