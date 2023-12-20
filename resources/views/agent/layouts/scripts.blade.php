@@ -9,7 +9,12 @@
     <!-- Custom scripts for all pages-->
  <script src="{{asset('js/sb-admin-2.min.js')}}"></script>
 
-
+<!-- Ekko Lightbox -->
+<script src="{{asset('AdminLTE/plugins/ekko-lightbox/ekko-lightbox.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{asset('AdminLTE/dist/js/adminlte.min.js')}}"></script>
+<!-- Filterizr-->
+<script src="{{asset('AdminLTE/plugins/filterizr/jquery.filterizr.min.js')}}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
@@ -17,9 +22,9 @@
     $(document).ready(function () {
         updateBadgeOnLoad();
         $("#messagesDropdown").on("click", function () {
-            
+
             $.ajax({
-                url: '/fetch-messages', 
+                url: '/fetch-messages',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -44,7 +49,7 @@
 
              messages.forEach(function (message) {
                 var messageItem = $("<a>").addClass("dropdown-item d-flex align-items-center").attr("href", "#");
-                 var checkboxContainer = $("<div>").addClass("checkbox-container");                 
+                 var checkboxContainer = $("<div>").addClass("checkbox-container");
                  var checkboxElement = $("<input>").attr({
                         type: "checkbox",
                         name: "response",
@@ -78,7 +83,7 @@
                 var messageElement = $("<div>").addClass("text-truncate").attr("id", "message").text(message.message);
                 var formattedDate = moment(message.created_at).format("YYYY-MM-DD HH:mm:ss");
                 var nameElement = $("<div>").addClass("small text-gray-500").attr("id", "name").text(message.name + " · " + formattedDate);
-                contentContainer.append(messageElement, nameElement); 
+                contentContainer.append(messageElement, nameElement);
                 messageItem.append(checkboxContainer, imageContainer, contentContainer);
                 dropdownContainer.append(messageItem);
 
