@@ -41,7 +41,7 @@ class PaymentController extends Controller
                 Alert::error('Login Required', 'Please Login First');
                 return redirect()->route('login');
             }
-            
+
         } catch (Exception $e) {
             echo($e);
             return $e->getMessage();
@@ -50,7 +50,7 @@ class PaymentController extends Controller
 
      public function success(Request $request)
     {
-        $id = $request->input('id'); 
+        $id = $request->input('id');
         if ($request->input('paymentId') && $request->input('PayerID') ) {
             $transaction = $this->gateway->completePurchase(array(
                 'payer_id'=> $request->input('PayerID'),
@@ -81,7 +81,7 @@ class PaymentController extends Controller
     }
 
     public function error(Request $request)
-    {   
+    {
         Alert::error('Error','Payment Was Cancled !' );
         return redirect()->route('details',['id'=> Crypt::encrypt($request->input('id'))]);
     }

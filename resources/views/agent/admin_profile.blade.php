@@ -119,6 +119,6 @@
 
     <!-- Bootstrap core JavaScript-->
     @include('agent.layouts.scripts')
-    
+
 </body>
 </html>
